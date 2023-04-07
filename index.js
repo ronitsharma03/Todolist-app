@@ -11,7 +11,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://127.0.0.1:27017/todolistDB");
+mongoose.connect("mongodb+srv://admin-ronit:test123@todolistcluster.n8ijwfg.mongodb.net/?retryWrites=true&w=majority");
 
 const itemSchema = {
     name: String
@@ -33,27 +33,6 @@ app.get("/", function (req, res) {
         console.log(error);
     });
 });
-
-// //Get request for custom route
-// app.get("/:customList", function (req, res) {
-//     const customList = _.capitalize(req.params.customList);
-
-//     List.findOne({ name: customList }).then((foundList) => {
-//         if (!foundList) {
-//             const list = new List({
-//                 name: customList,
-//                 items: []
-//             });
-//             list.save();
-//             res.redirect("/" + customList);
-//         } else {
-//             res.render("list", { listTitle: foundList.name, newItems: foundList.items });
-//         }
-//     }).catch((err) => {
-//         console.log(err)
-//     })
-// });
-
 
 //Post request for creating new custom route
 app.post("/newroute", function (req, res) {
@@ -109,6 +88,7 @@ app.post("/delete", function (req, res) {
             res.redirect("/");
         }).catch(error => {
             console.log("Failed to delete");
+            res.status(404).send("Failed to find! Try again");
         });
     }else{
         List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItem}}}).then(()=>{
